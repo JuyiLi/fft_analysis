@@ -1,5 +1,5 @@
 /**
- * @file fft_analyse
+ * @file fft_analysis
  * @brief fft数据处理库，和matlab中fft的功能相似
  *
  * Copyright (c) 2025 [JUYI LI].
@@ -9,14 +9,15 @@
  * created: 2025-07-29
  */
 
-#ifndef FFT_ANALYSE_H
-#define FFT_ANALYSE_H
+#ifndef FFT_ANALYSIS_H
+#define FFT_ANALYSIS_H
 
 #include <iostream>
 #include<stdio.h>
 #include<fstream>
 #include<complex>
 #include<cmath>
+#include<vector>
  
 #ifdef VISION_STATE
 #include <opencv2/opencv.hpp>
@@ -24,16 +25,16 @@
 #endif 
 //#include other .h 
 
-class fft_analyse
+class fft_analysis
 {
 public:	
     //构造和析构函数
     /**
-     * @brief fft_analyse
+     * @brief fft_analysis
      */
-    fft_analyse();
+    fft_analysis();
 
-    ~fft_analyse();
+    ~fft_analysis();
 
 	//public members here;
 	//including variables and functions you want to call in scripts;
@@ -53,9 +54,24 @@ public:
     /**
      * @brief fft
      * @param data 需要fft处理的数组
-     * @param data_len 数组的长度
      */
-    void fft(double * data, int data_len);
+    void fft(std::vector<double> data);
+
+    /**
+     * @brief data1和data2之间的相位差,单位deg
+     * @param data1 第一组数据
+     * @param data2 第二组数据
+     * @return 相位差
+     */
+    double phase_difference_deg(std::vector<double> data1, std::vector<double> data2);
+
+    /**
+     * @brief data1和data2之间的振幅衰减单位dB
+     * @param data1 第一组数据
+     * @param data2 第二组数据
+     * @return  振幅衰减，单位dB不
+     */
+    double amplitude_dB(std::vector<double> data1, std::vector<double> data2);
 	
 protected:
 	//protected members here;
@@ -78,7 +94,7 @@ protected:
      * @param size double数组的大小
      * @return 由最大值和位置组成的pair
      */
-    std::pair<double, size_t> findMax(const double arr[], size_t size);
+    std::pair<double, size_t> findMax(const std::vector<double> arr, size_t size);
 
     void f(int i,int j,std::complex<double> w);
 

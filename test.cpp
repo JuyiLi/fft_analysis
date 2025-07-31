@@ -3,7 +3,7 @@
 #include<fstream>
 #include<complex>
 #include<cmath>
-#include "fft_analyse.h"
+#include "fft_analysis.h"
 
 using namespace std;
 //typedef std:: complex<double> Complex;
@@ -73,9 +73,9 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    double data[16] = {1, 7, 8, 2, 1, 2, 8, 2, 3, 4, 2, 8, 9, 8, 1, 2};
-    fft_analyse fft_a;
+    vector<double> data = {1, 7, 8, 2, 1, 2, 8, 2, 3, 4, 2, 8, 9, 8, 1, 2};
+    fft_analysis fft_a;
 
     fft_a.print_on();
-    fft_a.fft(data, 16);
+    fft_a.fft(data);
 }

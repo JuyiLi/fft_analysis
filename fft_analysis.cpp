@@ -1,42 +1,42 @@
-#include "fft_analyse.h"
+#include "fft_analysis.h"
 
 using namespace std;
 typedef std::complex<double> Complex;
 
-fft_analyse::fft_analyse()
+fft_analysis::fft_analysis()
 {
 	//构造函数
 }  
 
-fft_analyse::~fft_analyse()
+fft_analysis::~fft_analysis()
 {
 	//析构函数
 } 
 
-void fft_analyse::print_on()
+void fft_analysis::print_on()
 {   
 	//成员函数
     is_print = true;
 }
 
-void fft_analyse::print_off()
+void fft_analysis::print_off()
 {
     is_print = false;
 }
 
-void fft_analyse::fft_setting(int sampling_frenquency_setting)
+void fft_analysis::fft_setting(int sampling_frenquency_setting)
 {
     sampling_frenquency = sampling_frenquency_setting;
 }
 
-void fft_analyse::fft(double *data, int data_len)
+void fft_analysis::fft(std::vector<double> data)
 {
     int N, p=0, t;
 
-    while(data_len>pow(2,p))p++;
+    while(data.size()>pow(2,p))p++;
     N = pow(2,p);
 
-    for(int i=data_len;i<N;i++)data[i]=0;
+    for(int i=data.size();i<N;i++)data[i]=0;
 
     for(int i=0;i<N;i++)
     {
@@ -57,25 +57,25 @@ void fft_analyse::fft(double *data, int data_len)
         cout << endl;
     }
 
-    double * amplitude_spectrum = new double(data_len/2+1);
-    for (int i=0; i<=data_len/2; i++)
+    vector<double> amplitude_spectrum;
+    for (int i=0; i<=(int)data.size()/2; i++)
     {
-        amplitude_spectrum[i] = 2* sqrt(fft_res[i].real()*fft_res[i].real() + fft_res[i].imag()*fft_res[i].imag())/data_len;
+        amplitude_spectrum.push_back(2* sqrt(fft_res[i].real()*fft_res[i].real() + fft_res[i].imag()*fft_res[i].imag())/data.size());
     }
 
     if (is_print)
     {
         cout << "amplitude_spectrum: ";
-        for (int i=0; i<=data_len/2; i++)
+        for (int i=0; i<=(int)data.size()/2; i++)
         {
             cout << amplitude_spectrum[i] << " ";
         }
         cout << endl;
     }
 
-    pair<double, size_t> max_pair = findMax(amplitude_spectrum, data_len/2+1);
+    pair<double, size_t> max_pair = findMax(amplitude_spectrum, data.size()/2+1);
 
-    estimated_frequency = max_pair.second*((double)sampling_frenquency/data_len);
+    estimated_frequency = max_pair.second*((double)sampling_frenquency/data.size());
     estimated_amplitude = max_pair.first;
 
     estimated_phase_rad = arg(fft_res[max_pair.second]);
@@ -89,7 +89,37 @@ void fft_analyse::fft(double *data, int data_len)
     }
 }
 
-std::pair<double, size_t> fft_analyse::findMax(const double arr[], size_t size) {
+double fft_analysis::phase_difference_deg(vector<double> data1, vector<double> data2)
+{
+    fft(data1);
+    double pd_1 = estimated_phase_deg;
+    fft(data2);
+    double pd_2 = estimated_phase_deg;
+
+    double pd = pd_1-pd_2;
+    if (pd>180)
+        pd = pd - 360;
+
+    if (is_print)
+        cout << "Phase difference in deg: " << pd << endl;
+
+    return pd;
+}
+
+double fft_analysis::amplitude_dB(vector<double> data1, vector<double> data2)
+{
+    fft(data1);
+    double ea_1 = estimated_amplitude;
+    fft(data2);
+    double ea_2 = estimated_amplitude;
+
+    double a_dB = 20*log10(ea_1/ea_2);
+    if (is_print)
+        cout << "Amplitude in dB: " << a_dB << endl;
+    return a_dB;
+}
+
+std::pair<double, size_t> fft_analysis::findMax(const vector<double> arr, size_t size) {
     if (size == 0)
     {
         throw std::invalid_argument("数组大小不能为零");
@@ -110,14 +140,14 @@ std::pair<double, size_t> fft_analyse::findMax(const double arr[], size_t size) 
     return {max_val, max_idx};
 }
 
-void fft_analyse::f(int i,int j,Complex w)
+void fft_analysis::f(int i,int j,Complex w)
 {
     Complex t  = fft_res[i];
     fft_res[i] = fft_res[i]+w*fft_res[j];
     fft_res[j] = t-w*fft_res[j];
 }
 
-Complex fft_analyse::w(int m,int N)
+Complex fft_analysis::w(int m,int N)
 {
     Complex c;
     c.real(cos(2*acos(-1)*m/N));
@@ -125,7 +155,7 @@ Complex fft_analyse::w(int m,int N)
     return c;
 }
 
-int fft_analyse::reverse(int n,int l)
+int fft_analysis::reverse(int n,int l)
 {
     int r=0, t;
     for (int i=0; i<l; i++)
