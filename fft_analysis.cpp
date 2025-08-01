@@ -1,3 +1,14 @@
+/**
+ * @file fft_analysis
+ * @brief fft数据处理库，和matlab中fft的功能相似
+ *
+ * Copyright (c) 2025 [JUYI LI].
+ * All rights reserved. Licensed under the MIT License.
+ *
+ * author: JUYI LI
+ * created: 2025-07-29
+ */
+
 #include "fft_analysis.h"
 
 using namespace std;
@@ -33,10 +44,14 @@ void fft_analysis::fft(std::vector<double> data)
 {
     int N, p=0, t;
 
-    while(data.size()>pow(2,p))p++;
+    while(data.size()>pow(2,p))
+        p++;
     N = pow(2,p);
+//    cout << "N:" << N << endl;
 
-    for(int i=data.size();i<N;i++)data[i]=0;
+    for(int i=data.size();i<N;i++)
+        data.push_back(0);
+//    cout << "N:" << N << endl;
 
     for(int i=0;i<N;i++)
     {
@@ -44,6 +59,7 @@ void fft_analysis::fft(std::vector<double> data)
         fft_res[i].real(data[t]);
         fft_res[i].imag(0);
     }
+//    cout << "fft_res:" << fft_res[0] << endl;
 
     for(int k=1;k<=p;k++)
         for(int l=0;l<N/pow(2,k);l++)
