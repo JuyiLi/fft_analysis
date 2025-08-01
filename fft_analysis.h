@@ -18,12 +18,6 @@
 #include<complex>
 #include<cmath>
 #include<vector>
- 
-#ifdef VISION_STATE
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#endif 
-//#include other .h 
 
 class fft_analysis
 {
