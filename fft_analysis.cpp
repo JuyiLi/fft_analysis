@@ -95,7 +95,7 @@ void fft_analysis::fft(std::vector<double> data)
     estimated_amplitude = max_pair.first;
 
     estimated_phase_rad = arg(fft_res[max_pair.second]);
-    estimated_phase_deg = estimated_phase_rad*180.0/M_PI;
+    estimated_phase_deg = estimated_phase_rad*180.0/3.14159265358979323846;
 
     if (is_print)
     {
